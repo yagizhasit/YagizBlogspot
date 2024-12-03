@@ -3,132 +3,127 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BLL.Controllers.Bases;
 using BLL.Services;
 using BLL.Models;
-using System.Linq;
 
 // Generated from Custom Template.
 
 namespace MVC.Controllers
 {
-    public class BlogController : MvcController
+    public class RoleController : MvcController
     {
         // Service injections:
-        private readonly IBlogService _blogService;
-        private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
 
         /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
         //private readonly IManyToManyRecordService _ManyToManyRecordService;
 
-        public BlogController(
-			IBlogService blogService
-            , IUserService userService
+        public RoleController(
+			IRoleService roleService
 
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
             //, IManyToManyRecordService ManyToManyRecordService
         )
         {
-            _blogService = blogService;
-            _userService = userService;
+            _roleService = roleService;
 
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
             //_ManyToManyRecordService = ManyToManyRecordService;
         }
 
-        // GET: Blogs
+        // GET: Role
         public IActionResult Index()
         {
             // Get collection service logic:
-            var list = _blogService.Query().ToList();
+            var list = _roleService.Query().ToList();
             return View(list);
         }
 
-        // GET: Blogs/Details/5
+        // GET: Role/Details/5
         public IActionResult Details(int id)
         {
             // Get item service logic:
-            var item = _blogService.Query().SingleOrDefault(q => q.Record.ID == id);
+            var item = _roleService.Query().SingleOrDefault(q => q.Record.ID == id);
             return View(item);
         }
 
         protected void SetViewData()
         {
             // Related items service logic to set ViewData (Record.Id and Name parameters may need to be changed in the SelectList constructor according to the model):
-            ViewData["UserID"] = new SelectList(_userService.Query().ToList(), "Record.ID", "Username");
             
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
             //ViewBag.ManyToManyRecordIds = new MultiSelectList(_ManyToManyRecordService.Query().ToList(), "Record.Id", "Name");
         }
 
-        // GET: Blogs/Create
+        // GET: Role/Create
         public IActionResult Create()
         {
             SetViewData();
             return View();
         }
 
-        // POST: Blogs/Create
+        // POST: Role/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(BlogModel blog)
+        public IActionResult Create(RoleModel role)
         {
             if (ModelState.IsValid)
             {
                 // Insert item service logic:
-                var result = _blogService.Create(blog.Record);
+                var result = _roleService.Create(role.Record);
                 if (result.IsSuccesful)
                 {
                     TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Details), new { id = blog.Record.ID });
+                    return RedirectToAction(nameof(Details), new { id = role.Record.ID });
                 }
                 ModelState.AddModelError("", result.Message);
             }
             SetViewData();
-            return View(blog);
+            return View(role);
         }
 
-        // GET: Blogs/Edit/5
+        // GET: Role/Edit/5
         public IActionResult Edit(int id)
         {
             // Get item to edit service logic:
-            var item = _blogService.Query().SingleOrDefault(q => q.Record.ID == id);
+            var item = _roleService.Query().SingleOrDefault(q => q.Record.ID == id);
             SetViewData();
             return View(item);
         }
 
-        // POST: Blogs/Edit
+        // POST: Role/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(BlogModel blog)
+        public IActionResult Edit(RoleModel role)
         {
             if (ModelState.IsValid)
             {
                 // Update item service logic:
-                var result = _blogService.Update(blog.Record);
+                var result = _roleService.Update(role.Record);
                 if (result.IsSuccesful)
                 {
                     TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Details), new { id = blog.Record.ID });
+                    return RedirectToAction(nameof(Details), new { id = role.Record.ID });
                 }
                 ModelState.AddModelError("", result.Message);
             }
             SetViewData();
-            return View(blog);
+            return View(role);
         }
 
-        // GET: Blogs/Delete/5
+        // GET: Role/Delete/5
         public IActionResult Delete(int id)
         {
             // Get item to delete service logic:
-            var item = _blogService.Query().SingleOrDefault(q => q.Record.ID == id);
+            var item = _roleService.Query().SingleOrDefault(q => q.Record.ID == id);
             return View(item);
         }
 
-        // POST: Blogs/Delete
+        // POST: Role/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             // Delete item service logic:
-            var result = _blogService.Delete(id);
+            var result = _roleService.Delete(id);
             TempData["Message"] = result.Message;
             return RedirectToAction(nameof(Index));
         }

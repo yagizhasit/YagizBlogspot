@@ -23,6 +23,7 @@
         @TempData["Message"]
     </p>
     }
+
     <form asp-action="Create" autocomplete="off">
 		@Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -79,3 +80,7 @@
         </div>
     </form>
 </div>  
+
+@section Scripts {
+    <partial name="_DateTimePicker" />
+}
