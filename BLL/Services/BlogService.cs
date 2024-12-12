@@ -56,7 +56,7 @@ namespace BLL.Services
 
         public IQueryable<BlogModel> Query()
         {
-            return _db.Blogs.OrderBy(s => s.PublishDate).Select(s => new BlogModel() { Record = s });
+            return _db.Blogs.Include(s => s.User).Include(s=> s.BlogTags).ThenInclude(s=>s.Tag).OrderBy(s => s.PublishDate).Select(s => new BlogModel() { Record = s });
         }
 
         public ServiceBase Update(Blog record)
