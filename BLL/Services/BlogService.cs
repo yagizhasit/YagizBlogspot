@@ -46,8 +46,7 @@ namespace BLL.Services
             var entity = _db.Blogs.Include(s => s.BlogTags).SingleOrDefault(s => s.ID == ID);
             if (entity == null)
                 return Error("Blog can't be found");
-            if (entity.BlogTags.Any())
-                return Error("Blog has relational blogtags!");
+            _db.BlogTags.RemoveRange(entity.BlogTags);
             _db.Blogs.Remove(entity);
             _db.SaveChanges();
             return Success("Blog deleted successfully.");
@@ -63,9 +62,10 @@ namespace BLL.Services
         {
             if (_db.Blogs.Any(s => s.ID != record.ID && s.Title.ToUpper() == record.Title.ToUpper().Trim()))
                 return Error("A blog with the same title already exists");
-            var entity = _db.Blogs.FirstOrDefault(s => s.ID == record.ID);
+            var entity = _db.Blogs.Include(s => s.BlogTags).FirstOrDefault(s => s.ID == record.ID);
             if (entity == null)
                 return Error("Blog can't be found");
+            _db.BlogTags.RemoveRange(entity.BlogTags);
        
             entity.Title = record.Title?.Trim();
             entity.Content = record.Content;

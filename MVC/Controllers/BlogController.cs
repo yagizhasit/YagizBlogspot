@@ -16,21 +16,21 @@ namespace MVC.Controllers
         private readonly IUserService _userService;
 
         /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-        //private readonly IManyToManyRecordService _ManyToManyRecordService;
+        private readonly ITagService _tagService;
 
         public BlogController(
 			IBlogService blogService
             , IUserService userService
 
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            //, IManyToManyRecordService ManyToManyRecordService
+            , ITagService tagService
         )
         {
             _blogService = blogService;
             _userService = userService;
 
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            //_ManyToManyRecordService = ManyToManyRecordService;
+            _tagService = tagService;
         }
 
         // GET: Blogs
@@ -53,9 +53,9 @@ namespace MVC.Controllers
         {
             // Related items service logic to set ViewData (Record.Id and Name parameters may need to be changed in the SelectList constructor according to the model):
             ViewData["UserID"] = new SelectList(_userService.Query().ToList(), "Record.ID", "Username");
-            
+
             /* Can be uncommented and used for many to many relationships. ManyToManyRecord may be replaced with the related entiy name in the controller and views. */
-            //ViewBag.ManyToManyRecordIds = new MultiSelectList(_ManyToManyRecordService.Query().ToList(), "Record.Id", "Name");
+            ViewBag.TagIDs = new MultiSelectList(_tagService.Query().ToList(), "Record.ID", "Name");
         }
 
         // GET: Blogs/Create

@@ -41,7 +41,7 @@ namespace BLL.Services
             if (entity == null)
                 return Error("Tag can't be found!");
             if (entity.BlogTags.Any())
-                return Error("Tag has relational BlogTags!");
+                return Error("Tag has relational Blogs!");
             _db.Tags.Remove(entity);
             _db.SaveChanges();
             return Success("Tag Deleted Successfully!");
