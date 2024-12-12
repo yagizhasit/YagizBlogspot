@@ -66,11 +66,15 @@ namespace BLL.Services
             var entity = _db.Blogs.FirstOrDefault(s => s.ID == record.ID);
             if (entity == null)
                 return Error("Blog can't be found");
+       
             entity.Title = record.Title?.Trim();
             entity.Content = record.Content;
             entity.Rating = record.Rating;
             entity.PublishDate = record.PublishDate;
+            entity.UserID = record.UserID;
+
             entity.BlogTags = record.BlogTags;
+
             _db.Blogs.Update(entity);
             _db.SaveChanges();
             return Success("Blog updated successfully.");
