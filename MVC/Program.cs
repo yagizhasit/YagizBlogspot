@@ -15,6 +15,7 @@ builder.Services.AddDbContext<Db>(options => options.UseSqlServer(connectionStri
 builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<ITagService, TagService>();
 
 var app = builder.Build();
 
