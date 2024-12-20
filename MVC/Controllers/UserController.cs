@@ -3,11 +3,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BLL.Controllers.Bases;
 using BLL.Services;
 using BLL.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using BLL.DAL;
 
 // Generated from Custom Template.
 
 namespace MVC.Controllers
 {
+    [Authorize]
     public class UserController : MvcController
     {
         // Service injections:
@@ -33,13 +39,54 @@ namespace MVC.Controllers
         }
 
         // GET: Users
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             // Get collection service logic:
             var list = _userService.Query().ToList();
             return View(list);
         }
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View();
+        }
 
+        [AllowAnonymous]
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserModel user)
+        {
+            if (ModelState.IsValid)
+            {
+               var userModel = _userService.Query().SingleOrDefault(u => u.Record.Username == user.Record.Username && u.Record.Password == user.Record.Password && u.Record.IsActive);
+                if (userModel is not null)
+                {
+                    List<Claim> claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name, userModel.Username),
+                        new Claim(ClaimTypes.Role, userModel.UserRole),
+                        new Claim("ID", userModel.Record.ID.ToString())
+                    };
+                    var identity  = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync(principal, new AuthenticationProperties()
+                    {
+                        IsPersistent = true
+                    });
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize(Roles = "Admin")]
         // GET: Users/Details/5
         public IActionResult Details(int id)
         {
@@ -58,6 +105,7 @@ namespace MVC.Controllers
         }
 
         // GET: Users/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             SetViewData();
@@ -67,6 +115,7 @@ namespace MVC.Controllers
         // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(UserModel user)
         {
             if (ModelState.IsValid)
@@ -85,6 +134,7 @@ namespace MVC.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             // Get item to edit service logic:
@@ -96,6 +146,7 @@ namespace MVC.Controllers
         // POST: Users/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(UserModel user)
         {
             if (ModelState.IsValid)
@@ -114,6 +165,7 @@ namespace MVC.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             // Get item to delete service logic:
@@ -124,6 +176,7 @@ namespace MVC.Controllers
         // POST: Users/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             // Delete item service logic:

@@ -4,11 +4,13 @@ using BLL.Controllers.Bases;
 using BLL.Services;
 using BLL.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 // Generated from Custom Template.
 
 namespace MVC.Controllers
 {
+    [Authorize]
     public class BlogController : MvcController
     {
         // Service injections:
@@ -34,6 +36,7 @@ namespace MVC.Controllers
         }
 
         // GET: Blogs
+        [AllowAnonymous]
         public IActionResult Index()
         {
             // Get collection service logic:
@@ -59,6 +62,7 @@ namespace MVC.Controllers
         }
 
         // GET: Blogs/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             SetViewData();
@@ -68,6 +72,7 @@ namespace MVC.Controllers
         // POST: Blogs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(BlogModel blog)
         {
             if (ModelState.IsValid)
@@ -86,6 +91,7 @@ namespace MVC.Controllers
         }
 
         // GET: Blogs/Edit/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             // Get item to edit service logic:
@@ -97,6 +103,7 @@ namespace MVC.Controllers
         // POST: Blogs/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(BlogModel blog)
         {
             if (ModelState.IsValid)
@@ -115,6 +122,7 @@ namespace MVC.Controllers
         }
 
         // GET: Blogs/Delete/5
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             // Get item to delete service logic:
@@ -125,6 +133,7 @@ namespace MVC.Controllers
         // POST: Blogs/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             // Delete item service logic:

@@ -17,7 +17,7 @@ namespace BLL.Models
 
         public string IsActive => Record.IsActive ? "Yes" : "No";
 
-        public string UserRole => Record.Role.Name;
+        public string UserRole => Record.Role?.Name;
 
     }
 }
