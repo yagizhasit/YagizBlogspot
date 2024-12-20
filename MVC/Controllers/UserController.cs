@@ -58,7 +58,15 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-               var userModel = _userService.Query().SingleOrDefault(u => u.Record.Username == user.Record.Username && u.Record.Password == user.Record.Password && u.Record.IsActive);
+                var users = _userService.Query()
+                .Where(u => u.Record.IsActive) 
+                .ToList(); 
+
+                var userModel = users.SingleOrDefault(u =>
+                    u.Record.Username == user.Record.Username &&
+                    u.Record.Password == user.Record.Password);
+
+
                 if (userModel is not null)
                 {
                     List<Claim> claims = new List<Claim>()
